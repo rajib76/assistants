@@ -6,7 +6,7 @@ Developing language assistants with LLMs in a low-code way.
 Install using pip:
 
 ```bash
-pip install assistants
+pip install langassist
 ```
 The framework requires a database to register the assistants. The default database used is MongoAtlas. Future versions of the framework will support additional database types. Currently, there is a MongoDB collection named assistants which registers each assistant as shown below:
 
@@ -28,3 +28,27 @@ Contributions are welcome in any form, be it through new features or improved do
 
 ## Example Usage
 The repository includes various examples demonstrating framework usage.
+```commandline
+
+import os
+
+from assistants.langassist.summarize_assistant import SummarizeAssistant
+from dotenv import load_dotenv
+
+load_dotenv()
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+
+if __name__ == "__main__":
+    # deploy the summarization assistant
+    file = "gen_ai.pdf"
+    assistant_name = "summarize_assistant"
+    # sc = SummarizeAssistant(file=file,
+    #                         assistant_name=assistant_name)
+    # sc.deploy_assistant()
+    
+    # Run the assistant
+    sc = SummarizeAssistant(assistant_name=assistant_name)
+    question = "Summarize the content in 300 words. Please ensure all points are covered"
+    print(sc.run_assistant(question))
+
+```
