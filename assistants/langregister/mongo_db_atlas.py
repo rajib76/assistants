@@ -12,8 +12,7 @@ MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
 
 
 class MongoAtlas(RegistrationClient):
-    uri = "mongodb+srv://rajib76:{MONGO_PASSWORD}@cluster0.cp3rxai.mongodb.net/?retryWrites=true&w=majority".format(
-        MONGO_PASSWORD=MONGO_PASSWORD)
+    uri:str=""
 
     def get_client(self):
         try:

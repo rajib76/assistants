@@ -16,9 +16,10 @@ class SummarizeAssistant(BaseAssistant):
     def list_assistant(self):
         assistants = openai.beta.assistants.list()
         return assistants
-    def deploy_assistant(self):
+
+    def deploy_assistant(self, client=MongoAtlas()):
         try:
-            self.register_assistant()
+            self.register_assistant(client)
             file = openai.files.create(
                 file=open(self.file, "rb"),
                 purpose='assistants'
@@ -30,15 +31,15 @@ class SummarizeAssistant(BaseAssistant):
                 tools=[self.type],
                 file_ids=[file.id]
             )
-            assistant_record={"assistant_name":assistant.name,"assistant_id":assistant.id,"file_id":file.id}
-            self.update_assistant(assistant_record)
+            assistant_record = {"assistant_name": assistant.name, "assistant_id": assistant.id, "file_id": file.id}
+            self.update_assistant(assistant_record, client)
             return file, assistant
         except Exception as e:
             print(e)
 
-    def run_assistant(self,question,client=MongoAtlas()):
+    def run_assistant(self, question, client=MongoAtlas()):
         assistant_record = {"assistant_name": self.assistant_name}
-        _,assistant_id,file_id = client.get_assistant(assistant_record)
+        _, assistant_id, file_id = client.get_assistant(assistant_record)
         thread = openai.beta.threads.create(
             messages=[
                 {
@@ -54,10 +55,10 @@ class SummarizeAssistant(BaseAssistant):
             assistant_id=assistant_id
         )
 
-        _,answer = self.get_answer(run,thread)
+        _, answer = self.get_answer(run, thread)
         return answer
 
-    def get_answer(self,run, thread):
+    def get_answer(self, run, thread):
         print("Looking for an answer to your question...")
         while run.status != "completed":
             run = openai.beta.threads.runs.retrieve(
@@ -77,11 +78,11 @@ class SummarizeAssistant(BaseAssistant):
     def update_assistant(self, assistant_record, client=MongoAtlas()):
         client.update_assistant(assistant_record)
 
-    def register_assistant(self,client = MongoAtlas()):
+    def register_assistant(self, client=MongoAtlas()):
         duplicate_assistant = False
-        assistant_record = {"assistant_name":self.assistant_name}
+        assistant_record = {"assistant_name": self.assistant_name}
         try:
-            duplicate_assistant,_,_ = client.get_assistant(assistant_record)
+            duplicate_assistant, _, _ = client.get_assistant(assistant_record)
         except Exception as e:
             print(e)
         if duplicate_assistant:
