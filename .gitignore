@@ -160,3 +160,4 @@ cython_debug/
 .idea/
 config/
 db/
+example_data

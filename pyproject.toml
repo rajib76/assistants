@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+[metadata]
+name="assistants"
+version="0.0.1"
+[project]
+name="assistants"
+version="0.0.1"
+authors=[
+{name="Rajib Deb", email="rajib76.gcp@gmail.com"}
+]
+description="The framework for language assistants"
+readme="README.md"
+requires-python=">=3.10"
+classifiers=[
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies=[
+openai
+python-dotenv
+requests
+pymongo
+]
+[project.urls]
+"Homepage" = "https://github.com/rajib76/assistants"
