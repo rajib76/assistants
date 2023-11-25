@@ -24,11 +24,14 @@ class MongoAtlas(RegistrationClient):
         except pymongo.errors.ConfigurationError:
             print("An Invalid URI host error was received. Is your Atlas host name correct in your connection string?")
             sys.exit(1)
+        except Exception as e:
+            print(e)
 
     def add_assistant(self, assistant_record):
         client, db, collection = self.get_client()
         try:
             result = collection.insert_many(assistant_record)
+            print("mongo result", result)
             return result
         except pymongo.errors.OperationFailure:
             print(
@@ -36,29 +39,34 @@ class MongoAtlas(RegistrationClient):
             sys.exit(1)
 
     def get_assistant(self, assistant_record):
-        client, db, collection = self.get_client()
-        docs = list(collection.find({"assistant_name": assistant_record["assistant_name"]}))
-        assistant_id = ""
-        file_id = ""
-        if len(docs) > 0:
-            for doc in docs:
-                assistant_id = doc["assistant_id"]
-                file_id = doc["file_id"]
-            return True, assistant_id, file_id
-        else:
-            return False
+        try:
+            client, db, collection = self.get_client()
+            docs = list(collection.find({"assistant_name": assistant_record["assistant_name"]}))
+            assistant_id = ""
+            file_id = ""
+            if len(docs) > 0:
+                for doc in docs:
+                    assistant_id = doc['metadata']["id"]
+                    file_id = doc["metadata"]["file_ids"]
+                return True, assistant_id, file_id
+            else:
+                return False
+        except Exception as e:
+            print(e)
 
     def update_assistant(self, assistant_record):
-        client, db, collection = self.get_client()
-        doc = collection.find_one_and_update({"assistant_name": assistant_record["assistant_name"]},
-                                             {"$set": {"assistant_id": assistant_record["assistant_id"],
-                                                       "file_id": assistant_record["file_id"]}}, new=True)
-        if doc is not None:
-            print("Assistant information updated in the database")
-            print(doc)
-        else:
-            print("No assistant information updates")
-        print("\n")
+        try:
+            client, db, collection = self.get_client()
+            doc = collection.find_one_and_update({"assistant_name": assistant_record["name"]},
+                                                 {"$set": {"metadata": assistant_record}}, new=True)
+            if doc is not None:
+                print("Assistant information updated in the database")
+                print(doc)
+            else:
+                print("No assistant information updates")
+            print("\n")
+        except Exception as e:
+            print(e)
 
     def delete_assistant(self, assistant_record):
         pass

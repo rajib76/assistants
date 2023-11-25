@@ -1,40 +1,44 @@
-# This is an example that shows how to use and deploy the summarization agent
-# Deploy the agent first
-# and then run the assistant
 import os
-
-from assistants.langassist.summarize_assistant import SummarizeAssistant
 
 from dotenv import load_dotenv
 
 from assistants.langregister.mongo_db_atlas import MongoAtlas
+from assistants.llm_assistants.openai_assistants import OpenAIRetrievalAssistant
 
 load_dotenv()
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
 
-mongo_client = MongoAtlas()
-mongo_client.uri = "mongodb+srv://rajib76:{MONGO_PASSWORD}@cluster0.cp3rxai.mongodb.net/?retryWrites=true&w=majority".format(
-    MONGO_PASSWORD=MONGO_PASSWORD)
 
-assistant_name = "summarize_assistant_03"
-file = "gen_ai.pdf"
-def deploy_assistant():
-    sc = SummarizeAssistant(file=file,assistant_name=assistant_name)
-    fileobj, assistantobj = sc.deploy_assistant(mongo_client)
-    print(fileobj,assistantobj)
+class SummarizationAgent():
+    def __init__(self):
+        self.instructions = f"""You are a helpful summarization agent.You help summarize the content provided to you"""
+        self.file = "/Users/joyeed/assistants/assistants/assistants/example_data/gen_ai.pdf"
+        self.assistant = OpenAIRetrievalAssistant(instructions=self.instructions,
+                                                  assistant_name="summarize_assistant",
+                                                  file=self.file)
+        self.mongo_client = MongoAtlas()
+        self.mongo_client.uri = "mongodb+srv://rajib76:{MONGO_PASSWORD}@cluster0.cp3rxai.mongodb.net/?retryWrites=true&w=majority".format(
+            MONGO_PASSWORD=MONGO_PASSWORD)
 
-def run_assistant():
-    sc = SummarizeAssistant(assistant_name=assistant_name)
-    question = "Summarize the content in 300 words. Please ensure all points are covered"
-    print(sc.run_assistant(question,client=mongo_client))
+    def deploy_assistant(self):
+        self.assistant.deploy_assistant(self.mongo_client)
 
+    def ask_assisant(self):
+        answer, thread, assistant_id = self.assistant.init_assistant(client=self.mongo_client)
+        while True:
+            question = input(answer + "\n")
+            if question.lower() == "exit":
+                answer = "Thanks for using my expertise"
+                print(answer)
+                deleted = self.assistant.destroy_thread(thread)
+                if deleted:
+                    print("Thread has been deleted")
+                    exit(0)
+            answer = self.assistant.ask_assistant(question, thread, assistant_id)
+            print(answer)
 
 
 if __name__ == "__main__":
-    # First deploy
-    # deploy_assistant()
-
-    #Then run
-    run_assistant()
-
+    sc = SummarizationAgent()
+    sc.ask_assisant()
