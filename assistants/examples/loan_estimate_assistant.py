@@ -22,7 +22,7 @@ mongo_client.uri = "mongodb+srv://rajib76:{MONGO_PASSWORD}@cluster0.cp3rxai.mong
 
 # assistant.deploy_assistant(client=mongo_client)
 
-answer, thread, assistant_id = assistant.init_assistant(client=mongo_client)
+answer, thread, assistant_id = assistant.init_assistant(greeting="Hi loan estimator",client=mongo_client)
 while True:
     question = input(answer + "\n")
     if question.lower() == "exit":

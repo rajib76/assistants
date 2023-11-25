@@ -85,14 +85,14 @@ class OpenAIRetrievalAssistant(Assistants):
         message_content = messages.data[0].content[0].text.value
         return annotations, message_content
 
-    def init_assistant(self, question="Hi Summarizer", client=MongoAtlas()):
+    def init_assistant(self, greeting="Hi Summarizer", client=MongoAtlas()):
         assistant_record = {"assistant_name": self.assistant_name}
         _, assistant_id, file_id = client.get_assistant(assistant_record)
         thread = openai.beta.threads.create(
             messages=[
                 {
                     "role": "user",
-                    "content": question,
+                    "content": greeting,
                     "file_ids": file_id
                 }
             ]

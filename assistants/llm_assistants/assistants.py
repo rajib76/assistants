@@ -15,7 +15,7 @@ class Assistants(BaseModel):
         pass
 
     @abstractmethod
-    def init_assistant(self, question="Hi"):
+    def init_assistant(self, greeting="Hi"):
         pass
 
     @abstractmethod
