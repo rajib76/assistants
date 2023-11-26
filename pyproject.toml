@@ -3,10 +3,10 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 [metadata]
 name="langassist"
-version="0.0.6"
+version="0.0.7"
 [project]
 name="langassist"
-version="0.0.6"
+version="0.0.7"
 authors=[
 {name="Rajib Deb", email="rajib76.gcp@gmail.com"}
 ]

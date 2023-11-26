@@ -10,11 +10,11 @@ OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
 
 instructions = f"""You are a helpful assistant who helps answering questions from a loan estimate"""
-file = "../example_data/loan_estimate.pdf"
+file = ["../example_data/loan_estimate.pdf"]
 
 assistant = OpenAIRetrievalAssistant(instructions=instructions,
                                      assistant_name="loan_estimate_assistant",
-                                     file=file
+                                     files=file
 )
 mongo_client = MongoAtlas()
 mongo_client.uri = "mongodb+srv://rajib76:{MONGO_PASSWORD}@cluster0.cp3rxai.mongodb.net/?retryWrites=true&w=majority".format(
