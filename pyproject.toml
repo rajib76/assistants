@@ -3,10 +3,10 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 [metadata]
 name="langassist"
-version="0.0.7"
+version="0.0.8"
 [project]
 name="langassist"
-version="0.0.7"
+version="0.0.8"
 authors=[
 {name="Rajib Deb", email="rajib76.gcp@gmail.com"}
 ]
@@ -22,7 +22,8 @@ dependencies=[
 "openai",
 "python-dotenv",
 "requests",
-"pymongo"
+"pymongo",
+"pyrocksdb"
 ]
 [project.urls]
 "Homepage" = "https://github.com/rajib76/assistants"
